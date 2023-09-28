@@ -105,11 +105,12 @@ pub fn spawn_scorer<T: ScorerBuilder + ?Sized>(
     actor: Entity,
 ) -> Entity {
     let scorer_ent = cmd.spawn_empty().id();
-    let span = ScorerSpan::new(scorer_ent, ScorerBuilder::label(builder));
+    let label = ScorerBuilder::label(builder);
+    let span = ScorerSpan::new(scorer_ent, label);
     let _guard = span.span().enter();
     debug!("New Scorer spawned.");
     cmd.entity(scorer_ent)
-        .insert(Name::new("Scorer"))
+        .insert(Name::new(label.unwrap_or("Scorer").to_string()))
         .insert(Score::default())
         .insert(Actor(actor));
     builder.build(cmd, scorer_ent, actor);
