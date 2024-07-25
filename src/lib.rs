@@ -254,6 +254,7 @@ impl Plugin for BigBrainPlugin {
                 BigBrainSet::Scorers,
                 BigBrainSet::Thinkers,
                 BigBrainSet::Actions,
+                BigBrainSet::ScheduleActions,
             )
                 .chain(),
         )
@@ -277,7 +278,8 @@ impl Plugin for BigBrainPlugin {
         )
         .add_systems(
             self.schedule.intern(),
-            (actions::steps_system, actions::concurrent_system).in_set(BigBrainSet::Actions),
+            (actions::steps_system, actions::concurrent_system)
+                .in_set(BigBrainSet::ScheduleActions),
         )
         .add_systems(
             self.cleanup_schedule.intern(),
@@ -299,6 +301,8 @@ pub enum BigBrainSet {
     Scorers,
     /// Actions are executed in this set.
     Actions,
+    /// Stepped or concurrent actions are handled in this set.
+    ScheduleActions,
     /// Thinkers run their logic in this set.
     Thinkers,
     /// Various internal cleanup items run in this final set.
